@@ -29,11 +29,21 @@ public class CheckingOutBookOnHold {
     private final FindBookOnHold findBookOnHold;
     private final Patrons patronRepository;
 
+    /**
+     * 执行借阅提取命令
+     *
+     * @param command
+     * @return
+     */
     public Try<Result> checkOut(@NonNull CheckOutBookCommand command) {
         return Try.of(() -> {
             BookOnHold bookOnHold = find(command.getBookId(), command.getPatronId());
             Patron patron = find(command.getPatronId());
+
+            // 将借阅提取的职责交给借阅人模型
             Either<BookCheckingOutFailed, BookCheckedOut> result = patron.checkOut(bookOnHold, command.getCheckoutDuration());
+
+            // 发布事件
             return Match(result).of(
                     Case($Left($()), this::publishEvents),
                     Case($Right($()), this::publishEvents));

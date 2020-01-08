@@ -12,6 +12,9 @@ import lombok.Value;
 import java.time.Instant;
 import java.util.UUID;
 
+/**
+ * 借阅人事件
+ */
 public interface PatronEvent extends DomainEvent {
 
     default PatronId patronId() {
@@ -21,18 +24,25 @@ public interface PatronEvent extends DomainEvent {
     UUID getPatronId();
 
     default UUID getAggregateId() {
-       return getPatronId();
+        return getPatronId();
     }
 
     default List<DomainEvent> normalize() {
         return List.of(this);
     }
 
+
+    // 借阅人创建事件
     @Value
     class PatronCreated implements PatronEvent {
         @NonNull UUID eventId = UUID.randomUUID();
+
         @NonNull Instant when;
+
+        // 借阅人id
         @NonNull UUID patronId;
+
+        // 借阅人类型
         @NonNull PatronType patronType;
 
         public static PatronCreated now(PatronId patronId, PatronType type) {
@@ -40,15 +50,30 @@ public interface PatronEvent extends DomainEvent {
         }
     }
 
+
+    // 借阅人借阅事件
     @Value
     class BookPlacedOnHold implements PatronEvent {
         @NonNull UUID eventId = UUID.randomUUID();
         @NonNull Instant when;
+
+        //////////////////////事件要素////////////////////
+        // 借阅人id
         @NonNull UUID patronId;
+
+        // 借阅书籍id
         @NonNull UUID bookId;
+
+        // 书籍类型
         @NonNull BookType bookType;
+
+        // 图书馆id
         @NonNull UUID libraryBranchId;
+
+        // 持有开始时间
         @NonNull Instant holdFrom;
+
+        // 持有结束时间
         Instant holdTill;
 
         public static BookPlacedOnHold bookPlacedOnHoldNow(BookId bookId, BookType bookType, LibraryBranchId libraryBranchId, PatronId patronId, HoldDuration holdDuration) {
@@ -63,6 +88,8 @@ public interface PatronEvent extends DomainEvent {
         }
     }
 
+
+    //
     @Value
     class BookPlacedOnHoldEvents implements PatronEvent {
         @NonNull UUID eventId = UUID.randomUUID();
@@ -88,6 +115,7 @@ public interface PatronEvent extends DomainEvent {
         }
     }
 
+    // 最大借阅数量到达事件
     @Value
     class MaximumNumberOhHoldsReached implements PatronEvent {
         @NonNull UUID eventId = UUID.randomUUID();
@@ -124,10 +152,14 @@ public interface PatronEvent extends DomainEvent {
         }
     }
 
+
+    // 书籍归还事件
     @Value
     class BookReturned implements PatronEvent {
         @NonNull UUID eventId = UUID.randomUUID();
         @NonNull Instant when;
+
+
         @NonNull UUID patronId;
         @NonNull UUID bookId;
         @NonNull BookType bookType;
@@ -172,6 +204,8 @@ public interface PatronEvent extends DomainEvent {
         }
     }
 
+
+    // 借阅取消事件
     @Value
     class BookHoldCanceled implements PatronEvent {
         @NonNull UUID eventId = UUID.randomUUID();
@@ -223,6 +257,8 @@ public interface PatronEvent extends DomainEvent {
         }
     }
 
+
+    // 借阅人过期持有事件
     @Value
     class OverdueCheckoutRegistered implements PatronEvent {
         @NonNull UUID eventId = UUID.randomUUID();

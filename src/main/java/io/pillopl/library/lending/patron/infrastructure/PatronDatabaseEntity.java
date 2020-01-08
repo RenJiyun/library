@@ -28,7 +28,7 @@ class PatronDatabaseEntity {
     Set<HoldDatabaseEntity> booksOnHold;
     Set<OverdueCheckoutDatabaseEntity> checkouts;
 
-     PatronDatabaseEntity(PatronId patronId, PatronType patronType) {
+    PatronDatabaseEntity(PatronId patronId, PatronType patronType) {
         this.patronId = patronId.getPatronId();
         this.patronType = patronType;
         this.booksOnHold = new HashSet<>();

@@ -6,6 +6,9 @@ import lombok.Value;
 import java.time.Duration;
 import java.time.Instant;
 
+/**
+ * 持有长度
+ */
 @Value
 public class HoldDuration {
 

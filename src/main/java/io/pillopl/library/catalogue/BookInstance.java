@@ -7,6 +7,9 @@ import lombok.Value;
 
 import java.util.UUID;
 
+/**
+ * 区分了Book和BookInstance
+ */
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class BookInstance {
@@ -18,8 +21,10 @@ class BookInstance {
     @NonNull
     BookType bookType;
 
-    static BookInstance instanceOf(Book book, BookType bookType) {
-        return new BookInstance(book.getBookIsbn(), new BookId(UUID.randomUUID()), bookType);
 
+    static BookInstance instanceOf(Book book, BookType bookType) {
+        // 这里其实有体现一个业务意义：
+        // 书籍是否受限是针对于BookInstance，而不是Book
+        return new BookInstance(book.getBookIsbn(), new BookId(UUID.randomUUID()), bookType);
     }
 }

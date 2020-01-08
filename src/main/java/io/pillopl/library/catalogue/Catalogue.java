@@ -32,8 +32,11 @@ public class Catalogue {
                 .getOrElse(Rejection));
     }
 
+
     private BookInstance saveAndPublishEvent(BookInstance bookInstance) {
         database.saveNew(bookInstance);
+
+        // 发布领域事件
         domainEvents.publish(new BookInstanceAddedToCatalogue(bookInstance));
         return bookInstance;
     }

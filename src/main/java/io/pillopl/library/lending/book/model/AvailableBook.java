@@ -11,6 +11,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Value;
 
+/**
+ * 可用书籍
+ */
 @Value
 @AllArgsConstructor
 @EqualsAndHashCode(of = "bookInformation")
@@ -37,6 +40,12 @@ public class AvailableBook implements Book {
         return bookInformation.getBookId();
     }
 
+    /**
+     * 处理书籍借阅事件
+     *
+     * @param bookPlacedOnHold
+     * @return
+     */
     public BookOnHold handle(BookPlacedOnHold bookPlacedOnHold) {
         return new BookOnHold(
                 bookInformation,

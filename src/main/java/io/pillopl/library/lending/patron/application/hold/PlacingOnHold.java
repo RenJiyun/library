@@ -25,10 +25,22 @@ public class PlacingOnHold {
     private final FindAvailableBook findAvailableBook;
     private final Patrons patronRepository;
 
+    /**
+     * 执行借阅命令
+     * 基本的步骤就是：
+     * 1. 获取聚合根
+     * 2. 调用聚合根上的方法执行业务逻辑
+     * 3. 发布领域事件
+     *
+     * @param command
+     * @return
+     */
     public Try<Result> placeOnHold(@NonNull PlaceOnHoldCommand command) {
         return Try.of(() -> {
             AvailableBook availableBook = find(command.getBookId());
             Patron patron = find(command.getPatronId());
+
+            // 下传到模型层做出合规的业务逻辑
             Either<BookHoldFailed, BookPlacedOnHoldEvents> result = patron.placeOnHold(availableBook, command.getHoldDuration());
             return Match(result).of(
                     Case($Left($()), this::publishEvents),

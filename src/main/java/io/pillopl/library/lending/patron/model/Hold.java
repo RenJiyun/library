@@ -5,6 +5,9 @@ import io.pillopl.library.lending.librarybranch.model.LibraryBranchId;
 import lombok.NonNull;
 import lombok.Value;
 
+/**
+ * 借阅人的一个书籍持有
+ */
 @Value
 class Hold {
 

@@ -17,6 +17,9 @@ import lombok.Value;
 
 import java.time.Instant;
 
+/**
+ * 已被借阅的书籍
+ */
 @Value
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode(of = "bookInformation")
@@ -41,12 +44,25 @@ public class BookOnHold implements Book {
         this(new BookInformation(bookId, type), libraryBranchId, patronId, holdTill, version);
     }
 
+
+    /**
+     * 处理书籍归还事件
+     *
+     * @param bookReturned
+     * @return
+     */
     public AvailableBook handle(BookReturned bookReturned) {
         return new AvailableBook(
                 bookInformation, new LibraryBranchId(bookReturned.getLibraryBranchId()),
                 version);
     }
 
+    /**
+     * 处理借阅过期事件
+     *
+     * @param bookHoldExpired
+     * @return
+     */
     public AvailableBook handle(BookHoldExpired bookHoldExpired) {
         return new AvailableBook(
                 bookInformation,
@@ -54,6 +70,13 @@ public class BookOnHold implements Book {
                 version);
     }
 
+
+    /**
+     * 处理书籍借阅提取事件
+     *
+     * @param bookCheckedOut
+     * @return
+     */
     public CheckedOutBook handle(BookCheckedOut bookCheckedOut) {
         return new CheckedOutBook(
                 bookInformation,
@@ -62,6 +85,13 @@ public class BookOnHold implements Book {
                 version);
     }
 
+
+    /**
+     * 处理借阅取消事件
+     *
+     * @param bookHoldCanceled
+     * @return
+     */
     public AvailableBook handle(BookHoldCanceled bookHoldCanceled) {
         return new AvailableBook(
                 bookInformation, new LibraryBranchId(bookHoldCanceled.getLibraryBranchId()),

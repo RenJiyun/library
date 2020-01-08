@@ -30,6 +30,13 @@ class PatronsDatabaseRepository implements Patrons {
     private final DomainModelMapper domainModelMapper;
     private final DomainEvents domainEvents;
 
+
+    /**
+     * 获取借阅人聚合根
+     *
+     * @param patronId
+     * @return
+     */
     @Override
     public Option<Patron> findBy(PatronId patronId) {
         return Option.of(patronEntityRepository
@@ -37,6 +44,13 @@ class PatronsDatabaseRepository implements Patrons {
                 .map(domainModelMapper::map);
     }
 
+
+    /**
+     * 发布借阅人领域事件
+     *
+     * @param domainEvent
+     * @return
+     */
     @Override
     public Patron publish(PatronEvent domainEvent) {
         Patron result = Match(domainEvent).of(
@@ -68,11 +82,14 @@ interface PatronEntityRepository extends CrudRepository<PatronDatabaseEntity, Lo
 
 }
 
+
+// 领域模型映射层，用于将数据库层的数据映射回领域层中的模型
 @AllArgsConstructor
 class DomainModelMapper {
 
     private final PatronFactory patronFactory;
 
+    // 将数据库中的借阅人实例映射为模型层的借阅人模型
     Patron map(PatronDatabaseEntity entity) {
         return patronFactory.create(
                 entity.patronType,

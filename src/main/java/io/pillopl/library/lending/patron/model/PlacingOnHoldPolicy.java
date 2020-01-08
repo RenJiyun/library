@@ -10,8 +10,13 @@ import lombok.Value;
 import static io.vavr.control.Either.left;
 import static io.vavr.control.Either.right;
 
+
+/**
+ * 借阅规则
+ */
 interface PlacingOnHoldPolicy extends Function3<AvailableBook, Patron, HoldDuration, Either<Rejection, Allowance>> {
 
+    // 借阅人身份规则
     PlacingOnHoldPolicy onlyResearcherPatronsCanHoldRestrictedBooksPolicy = (AvailableBook toHold, Patron patron, HoldDuration holdDuration) -> {
         if (toHold.isRestricted() && patron.isRegular()) {
             return left(Rejection.withReason("Regular patrons cannot hold restricted books"));
@@ -19,6 +24,7 @@ interface PlacingOnHoldPolicy extends Function3<AvailableBook, Patron, HoldDurat
         return right(new Allowance());
     };
 
+    // 过期持有上限规则
     PlacingOnHoldPolicy overdueCheckoutsRejectionPolicy = (AvailableBook toHold, Patron patron, HoldDuration holdDuration) -> {
         if (patron.overdueCheckoutsAt(toHold.getLibraryBranch()) >= OverdueCheckouts.MAX_COUNT_OF_OVERDUE_RESOURCES) {
             return left(Rejection.withReason("cannot place on hold when there are overdue checkouts"));
@@ -26,6 +32,7 @@ interface PlacingOnHoldPolicy extends Function3<AvailableBook, Patron, HoldDurat
         return right(new Allowance());
     };
 
+    // 最大持有数量规则
     PlacingOnHoldPolicy regularPatronMaximumNumberOfHoldsPolicy = (AvailableBook toHold, Patron patron, HoldDuration holdDuration) -> {
         if (patron.isRegular() && patron.numberOfHolds() >= PatronHolds.MAX_NUMBER_OF_HOLDS) {
             return left(Rejection.withReason("patron cannot hold more books"));
@@ -33,6 +40,7 @@ interface PlacingOnHoldPolicy extends Function3<AvailableBook, Patron, HoldDurat
         return right(new Allowance());
     };
 
+    // 无限期持有规则
     PlacingOnHoldPolicy onlyResearcherPatronsCanPlaceOpenEndedHolds = (AvailableBook toHold, Patron patron, HoldDuration holdDuration) -> {
         if (patron.isRegular() && holdDuration.isOpenEnded()) {
             return left(Rejection.withReason("regular patron cannot place open ended holds"));
@@ -51,7 +59,8 @@ interface PlacingOnHoldPolicy extends Function3<AvailableBook, Patron, HoldDurat
 }
 
 @Value
-class Allowance { }
+class Allowance {
+}
 
 @Value
 class Rejection {

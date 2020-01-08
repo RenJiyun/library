@@ -4,13 +4,20 @@ import io.pillopl.library.catalogue.BookId;
 import io.pillopl.library.lending.librarybranch.model.LibraryBranchId;
 import io.pillopl.library.lending.patron.model.CheckoutDuration;
 import io.pillopl.library.lending.patron.model.PatronId;
+
 import java.time.Instant;
+
 import lombok.NonNull;
 import lombok.Value;
 
+/**
+ * 图书借阅命令
+ */
 @Value
 public class CheckOutBookCommand {
     @NonNull Instant timestamp;
+
+    ///////////////////借阅要素////////////
     @NonNull PatronId patronId;
     @NonNull LibraryBranchId libraryId;
     @NonNull BookId bookId;

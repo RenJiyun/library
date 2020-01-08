@@ -16,11 +16,11 @@ public class RegisteringOverdueCheckout {
     public Try<BatchResult> registerOverdueCheckouts() {
         return Try.of(() ->
                 find.queryForCheckoutsToOverdue()
-                .toStreamOfEvents()
-                .map(this::publish)
-                .find(Try::isFailure)
-                .map(handleEventError -> BatchResult.SomeFailed)
-                .getOrElse(BatchResult.FullSuccess));
+                        .toStreamOfEvents()
+                        .map(this::publish)
+                        .find(Try::isFailure)
+                        .map(handleEventError -> BatchResult.SomeFailed)
+                        .getOrElse(BatchResult.FullSuccess));
     }
 
     private Try<Void> publish(OverdueCheckoutRegistered event) {
